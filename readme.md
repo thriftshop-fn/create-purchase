@@ -85,11 +85,11 @@ https://docs.google.com/spreadsheets/d/COPY-THIS-URL-SEGMENT/edit#gid=0
 > *Raw JSON PAYLOAD*
 ```json
 {
-"reference_no": "dh5zPAn", // UNIQUE Reference no from Paymongo
-"receiver_name": "Juan Dela Cruz",
-"receiver_phone": "+639123456789",
-"address": "Complete Address",
-"notes": "Add Something Awesome Here!"
+    "reference_no": "dh5zPAn", // UNIQUE Reference no from Paymongo
+    "receiver_name": "Juan Dela Cruz",
+    "receiver_phone": "+639123456789",
+    "address": "Complete Address",
+    "notes": "Add Something Awesome Here!"
 }
 ```
 
