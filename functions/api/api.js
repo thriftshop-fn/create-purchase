@@ -33,8 +33,6 @@ exports.handler = async (event) => {
       private_key: GOOGLE_PRIVATE_KEY.replace(/\\n/g, "\n"),
     });
 
-    console.log('connect');
-
     await doc.loadInfo();
 
     await doc.updateProperties({
