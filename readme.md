@@ -2,7 +2,9 @@
 
 ## Development
 
-- create .env
+- cp .env.example .env
+
+- edit .env
 
 ```toml
 GOOGLE_SERVICE_ACCOUNT_EMAIL=
