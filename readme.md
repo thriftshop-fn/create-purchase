@@ -82,17 +82,27 @@ https://docs.google.com/spreadsheets/d/COPY-THIS-URL-SEGMENT/edit#gid=0
 
 - test http://localhost:8888/api in postman
 
-> *Raw JSON PAYLOAD*
+
+<details>
+  <summary>Raw JSON PAYLOAD</summary>
+
 ```json
 {
-    "reference_no": "dh5zPAn", // UNIQUE Reference no from Paymongo
+    "reference_no": "dh5zPAn",
+    "referral": "midascode",
+    "intangible": false,
     "receiver_name": "Juan Dela Cruz",
     "receiver_phone": "+639123456789",
     "address": "Complete Address",
-    "notes": "Add Something Awesome Here!"
+    "notes": "Add Sosmething Awesome Here!"
 }
 ```
+- **NOTE: This Microservice should only be called after we Create Link and have reference_no (required)**
 
+- if intangible is true (i.e product such as softwares) **Address, and Receiver Info will Not Be Filled!** , default to false
+
+- Referral Code is Optional and  **used to update referral commission on referral sheet**
+</details>
 
 ## Deploy
 [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/thriftshop-fn/create-purchase)
