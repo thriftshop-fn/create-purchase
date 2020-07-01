@@ -25,6 +25,59 @@ exports.handler = async (event) => {
     };
   }
 
+  let validationError = [];
+
+  const {
+    reference_no = null,
+    referral = null,
+    intangible = false,
+    receiver_name = null,
+    receiver_phone = null,
+    address = null,
+    notes = null,
+  } = JSON.parse(event.body);
+
+  if (!reference_no) {
+    let error = {
+      field: "reference_no",
+      message: "No Reference Number Submitted",
+    };
+    validationError.push(error);
+  }
+
+  if (!intangible) {
+    if (!address) {
+      let error = {
+        field: "address",
+        message: "No Address Submitted",
+      };
+      validationError.push(error);
+    }
+
+    if (!receiver_name) {
+      let error = {
+        field: "receiver_name",
+        message: "No Name Submitted",
+      };
+      validationError.push(error);
+    }
+
+    if (!receiver_phone) {
+      let error = {
+        field: "receiver_phone",
+        message: "No Contact No. Submitted",
+      };
+      validationError.push(error);
+    }
+  }
+
+  if (validationError.length > 0) {
+    return {
+      statusCode: 422,
+      body: JSON.stringify({ errors: validationError }),
+    };
+  }
+
   try {
     const doc = new GoogleSpreadsheet(GOOGLE_SPREADSHEET_ID_FROM_URL);
 
@@ -35,21 +88,50 @@ exports.handler = async (event) => {
 
     await doc.loadInfo();
 
-    await doc.updateProperties({
-      title: "Product Purchase Record",
-    });
+    var purchase_sheet = doc.sheetsById[1];
 
-    const sheet = doc.sheetsByIndex[0];
+    if (!purchase_sheet) {
+      await doc.addSheet({
+        headerValues: [
+          "reference_no",
+          "pm_link",
+          "payment_id",
+          "paid",
+          "date_paid",
+          "mop",
+          "currency",
+          "net_amount",
+          "fee",
+          "payout_date",
+          "referral_code",
+          "referral_fee",
+          "sent",
+          "courier",
+          "tracking_no",
+          "received",
+          "intangible",
+          "order_details",
+          "receiver_name",
+          "receiver_phone",
+          "notes",
+          "delivery_address",
+          "payer_name",
+          "payer_email",
+          "payer_phone",
+          "billing_address",
+          "remarks",
+        ],
+        sheetId: 1,
+      });
+      purchase_sheet = doc.sheetsById[1];
+
+      await purchase_sheet.updateProperties({ title: "Purchases" });
+      await purchase_sheet.resize({ rowCount: 1000, columnCount: 27 });
+    }
 
     try {
-      await sheet.loadHeaderRow();
-    } catch (error) {
-      console.log("Setting up Spreadsheet Header For The First Time");
-
-      await sheet.updateProperties({ title: "Purchase Records" });
-
-      await sheet.resize({ rowCount: 1000, columnCount: 27 });
-
+      await purchase_sheet.loadHeaderRow();
+    } catch (e) {
       await sheet.setHeaderRow([
         "reference_no",
         "pm_link",
@@ -79,62 +161,11 @@ exports.handler = async (event) => {
         "billing_address",
         "remarks",
       ]);
+
+      await purchase_sheet.resize({ rowCount: 1000, columnCount: 27 });
     }
 
-    const {
-      reference_no = null,
-      referral = null,
-      intangible = false,
-      receiver_name = null,
-      receiver_phone = null,
-      address = null,
-      notes = null,
-    } = JSON.parse(event.body);
-
-    let validationError = [];
-
-    if (!reference_no) {
-      let error = {
-        field: "reference_no",
-        message: "No Reference No Submitted, *reference_no* is required",
-      };
-      validationError.push(error);
-    }
-
-    if (!intangible) {
-      if (!address) {
-        let error = {
-          field: "address",
-          message: "No Address No Submitted, *address* is required",
-        };
-        validationError.push(error);
-      }
-
-      if (!receiver_name) {
-        let error = {
-          field: "receiver_name",
-          message: "No Receiver Name Submitted, *receiver_name* is required",
-        };
-        validationError.push(error);
-      }
-
-      if (!receiver_phone) {
-        let error = {
-          field: "receiver_phone",
-          message: "No Receiver Phone Submitted, *receiver_phone* is required",
-        };
-        validationError.push(error);
-      }
-    }
-
-    if (validationError.length > 0) {
-      return {
-        statusCode: 422,
-        body: JSON.stringify({ errors: validationError }),
-      };
-    }
-
-    const rows = await sheet.getRows();
+    const rows = await purchase_sheet.getRows();
 
     const rowIndex = rows.findIndex((x) => x.reference_no == reference_no);
 
@@ -145,9 +176,11 @@ exports.handler = async (event) => {
       };
       return error;
     }
+
     var newRow;
+
     if (!intangible) {
-      newRow = await sheet.addRow({
+      newRow = await purchase_sheet.addRow({
         reference_no,
         referral_code: referral,
         receiver_name,
@@ -157,7 +190,7 @@ exports.handler = async (event) => {
         notes,
       });
     } else {
-      newRow = await sheet.addRow({
+      newRow = await purchase_sheet.addRow({
         reference_no,
         referral_code: referral,
         intangible: "yes",
@@ -168,7 +201,7 @@ exports.handler = async (event) => {
     return {
       statusCode: 201,
       body: JSON.stringify({
-        message: `POST Success - added row ${newRow._rowNumber - 1}`,
+        message: "Successfully Created A New Purchase!",
         rowNumber: newRow._rowNumber - 1,
       }),
     };
