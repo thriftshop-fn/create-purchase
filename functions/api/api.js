@@ -122,17 +122,22 @@ exports.handler = async (event) => {
           "remarks",
         ],
         sheetId: 1,
+        gridProperties: {
+          rowCount: 1000,
+          columnCount: 27,
+        },
+        title: "Purchases",
       });
-      purchase_sheet = doc.sheetsById[1];
 
-      await purchase_sheet.updateProperties({ title: "Purchases" });
-      await purchase_sheet.resize({ rowCount: 1000, columnCount: 27 });
+      purchase_sheet = doc.sheetsById[1];
     }
 
     try {
       await purchase_sheet.loadHeaderRow();
     } catch (e) {
-      await sheet.setHeaderRow([
+      await purchase_sheet.resize({ rowCount: 1000, columnCount: 27 });
+
+      await purchase_sheet.setHeaderRow([
         "reference_no",
         "pm_link",
         "payment_id",
@@ -161,8 +166,6 @@ exports.handler = async (event) => {
         "billing_address",
         "remarks",
       ]);
-
-      await purchase_sheet.resize({ rowCount: 1000, columnCount: 27 });
     }
 
     const rows = await purchase_sheet.getRows();
