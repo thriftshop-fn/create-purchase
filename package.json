@@ -1,7 +1,7 @@
 {
   "name": "create-purchase-fn",
   "version": "1.0.0",
-  "description": "## Usage",
+  "description": "Create New Purchase",
   "author": "GoldCoders",
   "license": "ISC",
   "dependencies": {
