@@ -90,7 +90,7 @@ https://docs.google.com/spreadsheets/d/COPY-THIS-URL-SEGMENT/edit#gid=0
 {
     "reference_no": "dh5zPAn",
     "referral": "midascode",
-    "intangible": false,
+    "deliverable": false,
     "receiver_name": "Juan Dela Cruz",
     "receiver_phone": "+639123456789",
     "address": "Complete Address",
@@ -99,7 +99,7 @@ https://docs.google.com/spreadsheets/d/COPY-THIS-URL-SEGMENT/edit#gid=0
 ```
 - **NOTE: This Microservice should only be called after we Create Link and have reference_no (required)**
 
-- if intangible is true (i.e product such as softwares) **Address, and Receiver Info will Not Be Filled!** , default to false
+- if deliverable is false (i.e product such as softwares) **Address, and Receiver Info will Not Be Filled!** , default to false
 
 - Referral Code is Optional and  **used to update referral commission on referral sheet**
 </details>

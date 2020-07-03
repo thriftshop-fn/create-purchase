@@ -30,7 +30,7 @@ exports.handler = async (event) => {
   const {
     reference_no = null,
     referral = null,
-    intangible = false,
+    deliverable = true,
     receiver_name = null,
     receiver_phone = null,
     address = null,
@@ -45,7 +45,7 @@ exports.handler = async (event) => {
     validationError.push(error);
   }
 
-  if (!intangible) {
+  if (deliverable) {
     if (!address) {
       let error = {
         field: "address",
@@ -94,6 +94,7 @@ exports.handler = async (event) => {
       await doc.addSheet({
         headerValues: [
           "reference_no",
+          "deliverable",
           "sent",
           "courier",
           "tracking_no",
@@ -110,7 +111,6 @@ exports.handler = async (event) => {
           "referral_code",
           "referral_fee",
           "received",
-          "intangible",
           "order_details",
           "receiver_name",
           "receiver_phone",
@@ -139,6 +139,7 @@ exports.handler = async (event) => {
 
       await purchase_sheet.setHeaderRow([
         "reference_no",
+        "deliverable",
         "sent",
         "courier",
         "tracking_no",
@@ -155,7 +156,6 @@ exports.handler = async (event) => {
         "referral_code",
         "referral_fee",
         "received",
-        "intangible",
         "order_details",
         "receiver_name",
         "receiver_phone",
@@ -182,21 +182,21 @@ exports.handler = async (event) => {
 
     var newRow;
 
-    if (!intangible) {
+    if (deliverable) {
       newRow = await purchase_sheet.addRow({
         reference_no,
         referral_code: referral,
         receiver_name,
         receiver_phone,
         delivery_address: address,
-        intangible: "no",
+        deliverable,
         notes,
       });
     } else {
       newRow = await purchase_sheet.addRow({
         reference_no,
         referral_code: referral,
-        intangible: "yes",
+        deliverable,
         notes,
       });
     }
