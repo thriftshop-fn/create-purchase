@@ -197,6 +197,9 @@ exports.handler = async (event) => {
         reference_no,
         referral_code: referral,
         deliverable,
+        sent: "N/A",
+        courier: "N/A",
+        tracking_no: "N/A",
         notes,
       });
     }
